@@ -56,3 +56,15 @@ img.img-welcome{
   /* flex-direction: column; */
   justify-content: center;
 }
+a{
+  color: #007bff;
+text-decoration: none;
+background-color: transparent;
+}
+.embed-responsive-16by9::before {
+    padding-top: 56.25%;
+}
+.embed-responsive::before {
+    display: block;
+    content: "";
+}
