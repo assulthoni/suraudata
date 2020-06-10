@@ -25,7 +25,7 @@ SECRET_KEY = 'e!98mr5u-#*a)4*o86^xk$va-q7x*_hc%2wbr+j71z7rd!3#gi'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'suraudata.xyz']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'suraudata.xyz', 'www.suraudata.xyz']
 
 
 # Application definition
