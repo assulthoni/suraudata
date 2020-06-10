@@ -11,7 +11,7 @@
         alt="..." class="card-img-top img-thumbnail"></a>
         <div class="card-body"><a href="#"
           class="text-uppercase text-muted text-sm letter-spacing-2" style="font-size:11px;">{{ post.category }} </a>
-          <h5 class="my-2"><a href="post.html" class="text-dark">{{ post.title }}</a></h5>
+          <h5 class="my-2"><a href="{{ post.link }}" target="_blank" class="text-dark">{{ post.title }}</a></h5>
           <p class="text-gray-500 text-sm my-3" style="font-size:11px;"><i class="far fa-clock mr-2" ></i>{{ post.created_at }}</p>
           <p class="my-2 text-muted text-sm">{{ post.content }}</p><a
           href="{{ post.link }}" target="_blank" class="btn btn-link pl-0">Read more<i
