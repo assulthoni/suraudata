@@ -1,10 +1,20 @@
 from django.shortcuts import render
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Posts
 # Create your views here.
 def index(request):
     queryset = Posts.objects.all()
-    context ={
-        'posts' : queryset,
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(queryset, 3)
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(page)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+    context = {
+        'posts' : posts,
         
     }
     return render(request, 'work.html', context=context)

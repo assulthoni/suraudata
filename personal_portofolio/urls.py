@@ -25,4 +25,4 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('work/', include('works.urls')),
 ]
-urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
