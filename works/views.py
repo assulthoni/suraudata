@@ -6,7 +6,7 @@ def index(request):
     queryset = Posts.objects.all()
     page = request.GET.get('page', 1)
 
-    paginator = Paginator(queryset, 3)
+    paginator = Paginator(queryset, 6)
     try:
         posts = paginator.page(page)
     except PageNotAnInteger:
@@ -15,6 +15,6 @@ def index(request):
         posts = paginator.page(paginator.num_pages)
     context = {
         'posts' : posts,
-        
+
     }
     return render(request, 'work.html', context=context)
