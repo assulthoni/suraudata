@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_content %}
+{% for p in post  %}
+<section class="work_detail-section text-center">
+  <div class="container" style="margin-top:25px;">
+    <div class="row bg-faded">
+      <div class="col-md-12">
+        <div class="card card-block h-100 justify-content-center border-0">
+          <img src="{{ p.photo.url }}" style="margin-bottom:15px;"
+          alt="{{p.title|truncatechars:15}}" class="img-detail"></img>
+          <br>
+          <br>
+          <h2 class="card-title work-title font-weight-bold">{{ p.title }}</h2>
+          <p class="work-caption">
+            {{ p.content }}
+          </p>
+          <a href="{{ p.link }}" class="btn btn-primary" target="_blank">
+            Further Read
+          </a>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endfor %}
+
+
+{% endblock %}

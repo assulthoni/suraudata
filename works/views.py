@@ -18,3 +18,10 @@ def index(request):
 
     }
     return render(request, 'work.html', context=context)
+
+def get_article(request, id):
+    queryset = Posts.objects.get(pk=id),
+    context = {
+        'post' : queryset
+    }
+    return render(request, 'work_detail.html', context=context)
