@@ -13,7 +13,7 @@
                 <div class="card-body"><a href="#"
                                           class="text-uppercase text-muted text-sm letter-spacing-2"
                                           style="font-size:11px;">{{ post.category }} </a>
-                    <h5 class="my-2"><a href="{{ post.link }}" target="_blank" class="text-dark">
+                    <h5 class="my-2"><a href="{% url 'work_detail' post.id%}" target="" class="text-dark">
                         {{ post.title|truncatechars:30 }}</a>
                     </h5>
                     <p class="text-gray-500 text-sm my-3" style="font-size:10px;">
