@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load martortags %}
 {% load static %}
 
 {% block page_content %}
@@ -7,7 +8,7 @@
         {% for post in posts %}
 
         <div class="col-lg-4 d-flex align-items-stretch" style="margin-top: 2%">
-            <div class="card shadow border-0 h-100"><a href="#">
+            <div class="card card-work shadow border-0 h-100"><a href="#">
                 <img src="{{ post.photo.url }}"
                      alt="{{post.title|truncatechars:15}}" class="card-img-top img-thumbnail"></a>
                 <div class="card-body"><a href="#"
