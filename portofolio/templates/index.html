@@ -1,0 +1,116 @@
+{% extends "base.html" %} {% load static %} {% block title %}{{ title }} :: {{ block.super }}{% endblock %} {% block css %}
+<link rel="stylesheet" type="text/css" href={% static 'css/fullview.css' %} />
+<link rel="stylesheet" href={% static 'css/style.css' %}> {% endblock css %} {% block navbar %}
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto ">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">About <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href='/blog'>Blog</a>
+            </li>
+    </div>
+</nav>
+{% endblock navbar %} {% block content %}
+<div id="fullview">
+    <div class="section">
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+                <div class="bg"></div>
+                <div class='quotes-hello'>
+                    <div class='row'>
+                        <div class="col-md-auto">
+                            <h1 class="display-4" id='jumbotron-name'>Shohibus Sulthoni</h1>
+                            <p class="lead" id='lead-quote'></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+                <div class="bg-stack"></div>
+                <div class='quotes-hello'>
+                    <div class='row'>
+                        <div class="col-md-auto">
+                            <h1 class="display-4" id='jumbotron-name'>Interest</h1>
+                            <ul class="list">
+                                <li>Data Science</li>
+                                <li>Artificial Intelligence</li>
+                                <li>Web Development</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="jumbotron jumbotron-fluid work-exp">
+            <div class="container">
+                <div class="bg-work"></div>
+                <div class='quotes-hello'>
+                    <div class='row'>
+                        <div class="col-md-auto">
+                            <h1 class="display-4" id='jumbotron-name'>Working Experience</h1>
+                            <ul class="list">
+                                <li>AI Software Engineer - <a href="https://stickearn.com" target="_blank">Stickearn</a></li>
+                                <li>Data Product Engineer - <a target='_blank' href="https://xetia.io">PT. Indo Xetia International</a></li>
+                                <li>Data Analyst Intern - <a target="_blank" href="https://sie.telkomuniversity.ac.id/">FRI Telkom Univ</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %} {% block js %}
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{% static 'js/fullview.js' %}"></script>
+<script>
+    var example = ['Im A Coffee Addict', 'Im An Introvert', 'Im A Geeks'];
+
+    textSequence(0);
+
+    function textSequence(i) {
+
+        if (example.length > i) {
+            setTimeout(function() {
+                document.getElementById("lead-quote").innerHTML = example[i];
+                textSequence(++i);
+            }, 2000); // 1 second (in milliseconds)
+
+        } else if (example.length == i) { // Loop
+            textSequence(0);
+        }
+
+    }
+</script>
+<script>
+    $(document).ready(function() {
+        $("#fullview").fullView({
+            //Navigation
+            navbar: "#navbar",
+            backToTop: true,
+
+            // Callback
+            onScrollEnd: function(currentView) {
+                if (!currentView.hasClass("nav-transparent")) {
+                    $(".header").addClass("changed");
+                } else {
+                    $(".header").removeClass("changed");
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

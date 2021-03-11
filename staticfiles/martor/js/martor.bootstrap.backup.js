@@ -1,7 +1,7 @@
 /**
- * Name         : Martor v1.5.6
+ * Name         : Martor v1.5.8
  * Created by   : Agus Makmun (Summon Agus)
- * Release date : 16-Sep-2020
+ * Release date : 05-Oct-2020
  * License      : GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
  * Repository   : https://github.com/agusmakmun/django-markdown-editor
 **/
@@ -13,6 +13,7 @@
     $.fn.martor = function() {
         $('.martor').trigger('martor.init');
 
+        // CSRF code
         var getCookie = function(name) {
             var cookieValue = null;
             var i = 0;
@@ -20,6 +21,7 @@
                 var cookies = document.cookie.split(';');
                 for (i; i < cookies.length; i++) {
                     var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
                     if (cookie.substring(0, name.length + 1) === (name + '=')) {
                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                         break;
@@ -29,6 +31,7 @@
             return cookieValue;
         };
 
+        // Each multiple editor fields
         this.each(function(i, obj) {
             var mainMartor   = $(obj);
             var field_name   = mainMartor.data('field-name');
@@ -40,8 +43,8 @@
             editor.setTheme('ace/theme/github');
             editor.getSession().setMode('ace/mode/markdown');
             editor.getSession().setUseWrapMode(true);
-            editor.$blockScrolling = Infinity;
-            editor.renderer.setScrollMargin(10, 10);
+            editor.$blockScrolling = Infinity; // prevents ace from logging annoying warnings
+            editor.renderer.setScrollMargin(10, 10); // set padding
             editor.setAutoScrollEditorIntoView(true);
             editor.setShowPrintMargin(false);
             editor.setOptions({
@@ -57,7 +60,7 @@
 
             var emojiWordCompleter = {
                 getCompletions: function(editor, session, pos, prefix, callback) {
-                    var wordList = typeof(emojis) != "undefined" ? emojis : [];
+                    var wordList = typeof(emojis) != "undefined" ? emojis : []; // from `atwho/emojis.min.js`
                     var obj = editor.getSession().getTokenAt(pos.row, pos.column.count);
                     if(typeof(obj.value) != "undefined") {
                         var curTokens = obj.value.split(/\s+/);
@@ -68,7 +71,7 @@
                               return {
                                   caption: word,
                                   value: word.replace(':', '') + ' ',
-                                  meta: 'emoji'
+                                  meta: 'emoji' // this should return as text only.
                               };
                           }));
                         }
@@ -100,35 +103,39 @@
                                             return {
                                                 caption: word,
                                                 value: word,
-                                                meta: 'username'
+                                                meta: 'username' // this should return as text only.
                                             };
                                         }));
                                     }
-                                }
+                                }// end success
                             });
                         }
                     }
                 }
             }
-
+            // Set autocomplete for ace editor
             if (editorConfig.mention === 'true') {
                 editor.completers = [emojiWordCompleter, mentionWordCompleter]
             }else {
                 editor.completers = [emojiWordCompleter]
             }
 
+            // set css `display:none` fot this textarea.
             textareaId.attr({'style': 'display:none'});
 
+            // assign all `field_name`, uses for a per-single editor.
             $(obj).find('.martor-toolbar').find('.markdown-selector').attr({'data-field-name': field_name});
             $(obj).find('.upload-progress').attr({'data-field-name': field_name});
             $(obj).find('.modal-help-guide').attr({'data-field-name': field_name});
             $(obj).find('.modal-emoji').attr({'data-field-name': field_name});
 
+            // Set if editor has changed.
             editor.on('change', function(evt){
                 var value = editor.getValue();
                 textareaId.val(value);
             });
 
+            // resize the editor using `resizable.min.js`
             $('#'+editorId).resizable({
                 direction: 'bottom',
                 stop: function() {
@@ -136,8 +143,19 @@
                 }
             });
 
+            // update the preview if this menu is clicked
             var currentTab = $('.tab-pane#nav-preview-'+field_name);
+            var editorTabButton = $('.nav-link#nav-preview-tab-'+field_name);
             var previewTabButton = $('.nav-link#nav-preview-tab-'+field_name);
+
+            editorTabButton.click(function(){
+                // show the `.martor-toolbar` for this current editor if under preview.
+                $(this).closest('.tab-martor-menu').find('.martor-toolbar').show();
+            });
+            previewTabButton.click(function() {
+                $(this).closest('.tab-martor-menu').find('.martor-toolbar').hide();
+            });
+
             var refreshPreview = function() {
                 var value = textareaId.val();
                 var form = new FormData();
@@ -171,23 +189,20 @@
                 });
             };
 
+            // Refresh the preview unconditionally on first load.
             window.onload = function() {
               refreshPreview();
             };
 
             if (editorConfig.living !== 'true') {
               previewTabButton.click(function(){
+                  // hide the `.martor-toolbar` for this current editor if under preview.
                   $(this).closest('.tab-martor-menu').find('.martor-toolbar').hide();
                   refreshPreview();
               });
             }else {
               editor.on('change', refreshPreview);
             }
-
-            var editorTabButton = $('.nav-link#nav-preview-tab-'+field_name);
-            editorTabButton.click(function(){
-                $(this).closest('.tab-martor-menu').find('.martor-toolbar').show();
-            });
 
             if (editorConfig.spellcheck == 'true') {
               try {
@@ -197,6 +212,7 @@
               }
             }
 
+            // win/linux: Ctrl+B, mac: Command+B
             var markdownToBold = function(editor) {
                 var originalRange = editor.getSelectionRange();
                 if (editor.selection.isEmpty()) {
@@ -208,11 +224,12 @@
                   var range = editor.getSelectionRange();
                   var text = editor.session.getTextRange(range);
                   editor.session.replace(range, '**'+text+'**');
-                  originalRange.end.column += 4;
+                  originalRange.end.column += 4; // this because injected from 4 `*` characters.
                   editor.focus();
                   editor.selection.setSelectionRange(originalRange);
                 }
             };
+            // win/linux: Ctrl+I, mac: Command+I
             var markdownToItalic = function(editor) {
                 var originalRange = editor.getSelectionRange();
                 if (editor.selection.isEmpty()) {
@@ -224,11 +241,12 @@
                   var range = editor.getSelectionRange();
                   var text = editor.session.getTextRange(range);
                   editor.session.replace(range, '_'+text+'_');
-                  originalRange.end.column += 2;
+                  originalRange.end.column += 2; // this because injected from 2 `_` characters.
                   editor.focus();
                   editor.selection.setSelectionRange(originalRange);
                 }
             };
+            // win/linux: Ctrl+Shift+U
             var markdownToUnderscores = function(editor) {
                 var originalRange = editor.getSelectionRange();
                 if (editor.selection.isEmpty()) {
@@ -240,11 +258,12 @@
                   var range = editor.getSelectionRange();
                   var text = editor.session.getTextRange(range);
                   editor.session.replace(range, '++'+text+'++');
-                  originalRange.end.column += 4;
+                  originalRange.end.column += 4; // this because injected from 4 `*` characters.
                   editor.focus();
                   editor.selection.setSelectionRange(originalRange);
                 }
             };
+            // win/linux: Ctrl+Shift+S
             var markdownToStrikethrough = function(editor) {
                 var originalRange = editor.getSelectionRange();
                 if (editor.selection.isEmpty()) {
@@ -256,11 +275,12 @@
                   var range = editor.getSelectionRange();
                   var text = editor.session.getTextRange(range);
                   editor.session.replace(range, '~~'+text+'~~');
-                  originalRange.end.column += 4;
+                  originalRange.end.column += 4; // this because injected from 4 `*` characters.
                   editor.focus();
                   editor.selection.setSelectionRange(originalRange);
                 }
             };
+            // win/linux: Ctrl+H, mac: Command+H
             var markdownToHorizontal = function(editor) {
                 var originalRange = editor.getSelectionRange();
                 if (editor.selection.isEmpty()) {
@@ -280,6 +300,7 @@
                   );
                 }
             };
+            // win/linux: Ctrl+Alt+1, mac: Command+Option+1
             var markdownToH1 = function(editor) {
                 var originalRange = editor.getSelectionRange();
                 if (editor.selection.isEmpty()) {
@@ -299,6 +320,7 @@
                   );
                 }
             };
+            // win/linux: Ctrl+Alt+2, mac: Command+Option+2
             var markdownToH2 = function(editor) {
                 var originalRange = editor.getSelectionRange();
                 if (editor.selection.isEmpty()) {
@@ -318,6 +340,7 @@
                   );
                 }
             };
+            // win/linux: Ctrl+Alt+3, mac: Command+Option+3
             var markdownToH3 = function(editor) {
                 var originalRange = editor.getSelectionRange();
                 if (editor.selection.isEmpty()) {
@@ -337,6 +360,7 @@
                   );
                 }
             };
+            // win/linux: Ctrl+Alt+P, mac: Command+Option+P
             var markdownToPre = function(editor) {
                 var originalRange = editor.getSelectionRange();
                 if (editor.selection.isEmpty()) {
@@ -356,6 +380,7 @@
                   );
                 }
             };
+            // win/linux: Ctrl+Alt+C, mac: Command+Option+C
             var markdownToCode = function(editor) {
                 var originalRange = editor.getSelectionRange();
                 if (editor.selection.isEmpty()) {
@@ -367,11 +392,12 @@
                   var range = editor.getSelectionRange();
                   var text = editor.session.getTextRange(range);
                   editor.session.replace(range, '`'+text+'`');
-                  originalRange.end.column += 2;
+                  originalRange.end.column += 2; // this because injected from 2 `_` characters.
                   editor.focus();
                   editor.selection.setSelectionRange(originalRange);
                 }
             };
+            // win/linux: Ctrl+Q, mac: Command+Q
             var markdownToBlockQuote = function(editor) {
                 var originalRange = editor.getSelectionRange();
                 if (editor.selection.isEmpty()) {
@@ -391,6 +417,7 @@
                   );
                 }
             };
+            // win/linux: Ctrl+U, mac: Command+U
             var markdownToUnorderedList = function(editor) {
                 var originalRange = editor.getSelectionRange();
                 if (editor.selection.isEmpty()) {
@@ -410,6 +437,7 @@
                   );
                 }
             };
+            // win/linux: Ctrl+Shift+O, mac: Command+Option+O
             var markdownToOrderedList = function(editor) {
                 var originalRange = editor.getSelectionRange();
                 if (editor.selection.isEmpty()) {
@@ -429,6 +457,7 @@
                   );
                 }
             };
+            // win/linux: Ctrl+L, mac: Command+L
             var markdownToLink = function(editor) {
                 var originalRange = editor.getSelectionRange();
                 if (editor.selection.isEmpty()) {
@@ -447,6 +476,8 @@
                   );
                 }
             };
+            // win/linux: Ctrl+Shift+I, mac: Command+Option+I
+            // or via upload: imageData={name:null, link:null}
             var markdownToImageLink = function(editor, imageData) {
                 var originalRange = editor.getSelectionRange();
                 if (typeof(imageData) === 'undefined') {
@@ -465,7 +496,7 @@
                             originalRange.end.column+12
                         );
                     }
-                }else {
+                }else { // this if use image upload to imgur.
                   var curpos = editor.getCursorPosition();
                   editor.session.insert(curpos, '!['+imageData.name+']('+imageData.link+') ');
                   editor.focus();
@@ -475,6 +506,7 @@
                   );
                 }
             };
+            // win/linux: Ctrl+M, mac: Command+M
             var markdownToMention = function(editor) {
                 var originalRange = editor.getSelectionRange();
                 if (editor.selection.isEmpty()) {
@@ -493,12 +525,15 @@
                   )
                 }
             };
+            // Insert Emoji to text editor: $('.insert-emoji').data('emoji-target')
             var markdownToEmoji = function(editor, data_target) {
                 var curpos = editor.getCursorPosition();
                 editor.session.insert(curpos, ' '+data_target+' ');
                 editor.focus();
                 editor.selection.moveTo(curpos.row, curpos.column+data_target.length+2);
             };
+            // Markdown Image Uploader auto insert to editor.
+            // with special insert, eg: ![avatar.png](i.imgur.com/DytfpTz.png)
             var markdownToUploadImage = function(editor) {
                 var firstForm = $('#'+editorId).closest('form').get(0);
                 var field_name = editor.container.id.replace('martor-', '');
@@ -538,6 +573,7 @@
                 return false;
             };
 
+            // Trigger Keyboards
             editor.commands.addCommand({
                 name: 'markdownToBold',
                 bindKey: {win: 'Ctrl-B', mac: 'Command-B'},
@@ -669,6 +705,7 @@
                 });
             }
 
+            // Trigger Click
             $('.markdown-bold[data-field-name='+field_name+']').click(function(){
                 markdownToBold(editor);
             });
@@ -709,8 +746,9 @@
                 markdownToImageLink(editor);
             });
 
-            var btnMention = $('.markdown-direct-mention[data-field-name='+field_name+']');
-            var btnUpload = $('.markdown-image-upload[data-field-name='+field_name+']');
+            // Custom decission for toolbar buttons.
+            var btnMention = $('.markdown-direct-mention[data-field-name='+field_name+']'); // To Direct Mention
+            var btnUpload = $('.markdown-image-upload[data-field-name='+field_name+']'); // To Upload Image
             if (editorConfig.mention === 'true' && editorConfig.imgur === 'true') {
                 btnMention.click(function(){
                     markdownToMention(editor);
@@ -734,16 +772,20 @@
             else {
                 btnMention.remove();
                 btnUpload.remove();
+                // Disable help of `mention`
                 $('.markdown-reference tbody tr')[1].remove();
             }
 
+            // Modal Popup for Help Guide & Emoji Cheat Sheet
             $('.markdown-help[data-field-name='+field_name+']').click(function(){
                 $('.modal-help-guide[data-field-name='+field_name+']').modal('show');
             });
 
+            // Toggle editor, preview, maximize
             var martorField       = $('.martor-field-'+field_name);
             var btnToggleMaximize = $('.markdown-toggle-maximize[data-field-name='+field_name+']');
 
+            // Toggle maximize and minimize
             var handleToggleMinimize = function() {
                 $(document.body).removeClass('overflow');
                 $(this).attr({'title': 'Full Screen'});
@@ -774,18 +816,21 @@
                 handleToggleMaximize($(this));
             });
 
+            // Exit full screen when `ESC` is pressed.
             $(document).keyup(function(e) {
               if (e.keyCode == 27 && mainMartor.hasClass('main-martor-fullscreen')) {
                 btnToggleMaximize.trigger('click');
               }
             });
 
+            // markdown insert emoji from the modal
             $('.markdown-emoji[data-field-name='+field_name+']').click(function(){
                 var modalEmoji = $('.modal-emoji[data-field-name='+field_name+']');
-                var emojiList = typeof(emojis) != "undefined" ? emojis : [];
+                var emojiList = typeof(emojis) != "undefined" ? emojis : []; // from `plugins/js/emojis.min.js`
                 var segmentEmoji = modalEmoji.find('.emoji-content-body');
                 var loaderInit  = modalEmoji.find('.emoji-loader-init');
 
+                // setup initial loader
                 segmentEmoji.html('');
                 loaderInit.show();
                 modalEmoji.show();
@@ -809,10 +854,11 @@
                 modalEmoji.modal('handleUpdate');
             });
 
+            // Set initial value if has the content before.
             if (textareaId.val() != '') {
                 editor.setValue(textareaId.val(), -1);
             }
-        });
+        });// end each `mainMartor`
     };
 
     $(function() {
@@ -824,6 +870,8 @@
             $row.find('.main-martor').each(function () {
                 var id = $row.attr('id');
                 id = id.substr(id.lastIndexOf('-') + 1);
+                // Notice here we are using our jQuery instead of Django's.
+                // This is because plugins are only loaded for ours.
                 var fixed = $(this.outerHTML.replace(/__prefix__/g, id));
                 $(this).replaceWith(fixed);
                 fixed.martor();
