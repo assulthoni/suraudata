@@ -1,0 +1,102 @@
+/* color palette
+#212123 - black
+#616063 - gray
+#ccb9b1 - warm chocolate
+#c08267 - light chocolate
+#a0583c - chocolate
+*/
+
+body .jumbotron {
+    margin-bottom: 0px;
+    position: relative;
+    background: none;
+    color: #f9f9f9;
+    height: 100vh;
+}
+
+.pagination a.active {
+    background-color: #a35a2f;
+    color: white;
+}
+
+.pagination a:hover:not(.active) {
+    background-color: #ddd;
+}
+
+.jumbotron .bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('../img/jumbotron-1.jpg');
+    background-position: 0% 25%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);
+    filter: blur(5px);
+    z-index: -1;
+}
+
+.jumbotron .bg-stack {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('../img/jumbotron-2.jpg');
+    background-position: 0% 25%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);
+    filter: blur(5px);
+    z-index: -1;
+}
+
+.jumbotron .bg-work {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('../img/jumbotron-3.png');
+    background-position: 0% 25%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);
+    filter: blur(5px);
+    z-index: -1;
+}
+
+.navbar {
+    margin-bottom: 0px;
+}
+
+.quotes-hello {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+body {
+    padding-bottom: 20px;
+}
+
+.list {
+    margin-left: 10%;
+}
+
+.work-exp h1 ul li {
+    color: #212123;
+}
